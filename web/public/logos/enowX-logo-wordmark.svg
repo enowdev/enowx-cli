@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 180" width="720" height="180">
+  <defs>
+    <linearGradient id="wpGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#38bdf8"/>
+      <stop offset="60%" stop-color="#38bdf8"/>
+      <stop offset="100%" stop-color="#818cf8"/>
+    </linearGradient>
+    <linearGradient id="waGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#c084fc"/>
+      <stop offset="100%" stop-color="#818cf8"/>
+    </linearGradient>
+    <filter id="wglow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="8" result="blur"/>
+      <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+    </filter>
+  </defs>
+
+  <g transform="translate(60, 20)">
+    <text x="0" y="102" font-family="'Space Grotesk', -apple-system, sans-serif" font-size="94" font-weight="700" letter-spacing="-0.035em" fill="#ffffff">enow</text>
+    <g transform="translate(252, 28) scale(0.42)">
+      <path d="M 12 0 L 64 0 L 176 182 L 124 182 Z" fill="url(#wpGrad)"/>
+      <path d="M 12 182 L 64 182 L 96 130 L 62 102 Z" fill="url(#waGrad)"/>
+      <path d="M 116 90 L 150 34 L 176 0 L 124 0 L 84 64 Z" fill="url(#waGrad)" filter="url(#wglow)"/>
+      <circle cx="94" cy="88" r="5" fill="#ffffff" filter="url(#wglow)"/>
+    </g>
+    <text x="4" y="136" font-family="'JetBrains Mono', monospace" font-size="14" font-weight="600" letter-spacing="0.28em" fill="#94a3b8">AI CODING &amp; SUBSCRIPTIONS</text>
+  </g>
+</svg>

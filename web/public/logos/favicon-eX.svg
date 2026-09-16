@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="pGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#38bdf8"/>
+      <stop offset="60%" stop-color="#38bdf8"/>
+      <stop offset="100%" stop-color="#818cf8"/>
+    </linearGradient>
+    <linearGradient id="aGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#c084fc"/>
+      <stop offset="50%" stop-color="#818cf8"/>
+      <stop offset="100%" stop-color="#818cf8"/>
+    </linearGradient>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#0f172a"/>
+      <stop offset="100%" stop-color="#020617"/>
+    </linearGradient>
+    <linearGradient id="borderGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#38bdf8" stop-opacity="0.8"/>
+      <stop offset="50%" stop-color="#818cf8" stop-opacity="0.3"/>
+      <stop offset="100%" stop-color="#c084fc" stop-opacity="0.7"/>
+    </linearGradient>
+    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="10" result="blur"/>
+      <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+    </filter>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="8" stdDeviation="12" flood-color="#000000" flood-opacity="0.6"/>
+    </filter>
+  </defs>
+
+  <rect x="24" y="24" width="464" height="464" rx="112" fill="url(#bgGrad)" stroke="url(#borderGrad)" stroke-width="3.5"/>
+  <rect x="24" y="24" width="464" height="464" rx="112" fill="none" stroke="#ffffff" stroke-width="1" stroke-opacity="0.1"/>
+  
+  <circle cx="256" cy="256" r="185" fill="none" stroke="#38bdf8" stroke-width="1" stroke-opacity="0.12" stroke-dasharray="6 6"/>
+  <circle cx="256" cy="256" r="125" fill="none" stroke="#c084fc" stroke-width="1" stroke-opacity="0.08"/>
+
+  <g transform="translate(6, 0)">
+    <path fill-rule="evenodd" d="M 244 238 L 92 238 C 92 195 126 160 168 160 C 210 160 244 195 244 238 L 244 266 L 128 266 C 130 290 148 306 168 306 C 190 306 205 294 212 276 L 244 292 C 230 324 202 342 168 342 C 122 342 92 306 92 264 L 92 238 Z M 128 238 L 208 238 C 206 208 190 188 168 188 C 146 188 130 208 128 238 Z" fill="url(#pGrad)" filter="url(#glow)"/>
+    <path d="M 276 160 L 320 160 L 418 342 L 374 342 Z" fill="url(#pGrad)"/>
+    <path d="M 276 342 L 320 342 L 348 296 L 318 272 Z" fill="url(#aGrad)"/>
+    <path d="M 366 260 L 396 206 L 418 160 L 374 160 L 338 226 Z" fill="url(#aGrad)" filter="url(#glow)"/>
+    <circle cx="347" cy="250" r="5" fill="#ffffff" filter="url(#glow)"/>
+  </g>
+</svg>

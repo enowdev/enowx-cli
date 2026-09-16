@@ -1,0 +1,66 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 920 220" width="920" height="220">
+  <defs>
+    <linearGradient id="fpGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#38bdf8"/>
+      <stop offset="60%" stop-color="#38bdf8"/>
+      <stop offset="100%" stop-color="#818cf8"/>
+    </linearGradient>
+    <linearGradient id="faGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#c084fc"/>
+      <stop offset="50%" stop-color="#818cf8"/>
+      <stop offset="100%" stop-color="#818cf8"/>
+    </linearGradient>
+    <linearGradient id="fbgGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#0f172a"/>
+      <stop offset="100%" stop-color="#020617"/>
+    </linearGradient>
+    <linearGradient id="fborderGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#38bdf8" stop-opacity="0.8"/>
+      <stop offset="50%" stop-color="#818cf8" stop-opacity="0.3"/>
+      <stop offset="100%" stop-color="#c084fc" stop-opacity="0.7"/>
+    </linearGradient>
+    <filter id="fglow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="8" result="blur"/>
+      <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+    </filter>
+    <filter id="fshadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="6" stdDeviation="10" flood-color="#000000" flood-opacity="0.5"/>
+    </filter>
+  </defs>
+
+  <!-- Left: Emblem eX -->
+  <g transform="translate(36, 30)" filter="url(#fshadow)">
+    <rect x="0" y="0" width="160" height="160" rx="40" fill="url(#fbgGrad)" stroke="url(#fborderGrad)" stroke-width="2.5"/>
+    <rect x="0" y="0" width="160" height="160" rx="40" fill="none" stroke="#ffffff" stroke-width="1" stroke-opacity="0.12"/>
+    <circle cx="80" cy="80" r="62" fill="none" stroke="#38bdf8" stroke-width="1" stroke-opacity="0.12" stroke-dasharray="4 4"/>
+    <circle cx="80" cy="80" r="42" fill="none" stroke="#c084fc" stroke-width="1" stroke-opacity="0.08"/>
+
+    <g transform="translate(5, -1) scale(0.29)">
+      <path fill-rule="evenodd" d="M 244 238 L 92 238 C 92 195 126 160 168 160 C 210 160 244 195 244 238 L 244 266 L 128 266 C 130 290 148 306 168 306 C 190 306 205 294 212 276 L 244 292 C 230 324 202 342 168 342 C 122 342 92 306 92 264 L 92 238 Z M 128 238 L 208 238 C 206 208 190 188 168 188 C 146 188 130 208 128 238 Z" fill="url(#fpGrad)" filter="url(#fglow)"/>
+      <path d="M 276 160 L 320 160 L 418 342 L 374 342 Z" fill="url(#fpGrad)"/>
+      <path d="M 276 342 L 320 342 L 348 296 L 318 272 Z" fill="url(#faGrad)"/>
+      <path d="M 366 260 L 396 206 L 418 160 L 374 160 L 338 226 Z" fill="url(#faGrad)" filter="url(#fglow)"/>
+      <circle cx="347" cy="250" r="5" fill="#ffffff" filter="url(#fglow)"/>
+    </g>
+  </g>
+
+  <!-- Right: Typography Lockup -->
+  <g transform="translate(228, 0)">
+    <text x="0" y="118" font-family="'Space Grotesk', -apple-system, sans-serif" font-size="82" font-weight="700" letter-spacing="-0.035em" fill="#ffffff">enow</text>
+    
+    <g transform="translate(216, 56) scale(0.34)">
+      <path d="M 12 0 L 62 0 L 172 182 L 122 182 Z" fill="url(#fpGrad)"/>
+      <path d="M 12 182 L 62 182 L 94 130 L 60 102 Z" fill="url(#faGrad)"/>
+      <path d="M 114 90 L 148 34 L 172 0 L 122 0 L 82 64 Z" fill="url(#faGrad)" filter="url(#fglow)"/>
+      <circle cx="92" cy="88" r="5" fill="#ffffff" filter="url(#fglow)"/>
+    </g>
+
+    <text x="3" y="152" font-family="'JetBrains Mono', monospace" font-size="14.5" font-weight="600" letter-spacing="0.28em" fill="#94a3b8">AI CODING &amp; SUBSCRIPTIONS</text>
+    
+    <g transform="translate(4, 168)">
+      <circle cx="4" cy="4" r="3.5" fill="#10b981"/>
+      <circle cx="4" cy="4" r="7" fill="#10b981" opacity="0.25"/>
+      <text x="16" y="7.5" font-family="'JetBrains Mono', monospace" font-size="10.5" font-weight="500" letter-spacing="0.1em" fill="#64748b">AGENTIC DEVELOPER ECOSYSTEM</text>
+    </g>
+  </g>
+</svg>

@@ -1,0 +1,28 @@
+[package]
+name = "enowx-cli"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+description = "enowx-cli coding agent with the enowx terminal interface"
+
+# Keep the shipped binary named `enx` so `enx` on PATH still runs the same
+# command after the crate rename.
+[[bin]]
+name = "enx"
+path = "src/main.rs"
+
+[features]
+default = []
+web = ["dep:enowx-server"]
+
+[dependencies]
+enowx-core.workspace = true
+enowx-server = { workspace = true, optional = true }
+enowx-tui.workspace = true
+
+anyhow.workspace = true
+clap.workspace = true
+serde_json.workspace = true
+tokio.workspace = true
+tracing.workspace = true
+tracing-subscriber.workspace = true

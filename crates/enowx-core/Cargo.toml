@@ -1,0 +1,27 @@
+[package]
+name = "enowx-core"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+description = "Agent core: model streaming, tool-calling loop, tools, sessions, roles"
+
+[dependencies]
+anyhow.workspace = true
+async-trait.workspace = true
+chrono.workspace = true
+dirs.workspace = true
+futures.workspace = true
+globset.workspace = true
+ignore.workspace = true
+regex.workspace = true
+reqwest.workspace = true
+serde.workspace = true
+nix.workspace = true
+serde_json.workspace = true
+thiserror.workspace = true
+tokio.workspace = true
+tokio-util.workspace = true
+toml.workspace = true
+tracing.workspace = true
+uuid.workspace = true
+which = "8.0.6"

@@ -1,0 +1,1825 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>enowX • HD Logo Studio & Asset Generator</title>
+  <link rel="icon" id="dynamic-favicon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='8' fill='%23080c14'/><text x='16' y='22' font-family='sans-serif' font-size='15' font-weight='bold' fill='%2338bdf8' text-anchor='middle'>eX</text></svg>">
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Optional JSZip for 1-Click All Asset Download -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+
+  <style>
+    :root {
+      --bg-canvas: #07090e;
+      --bg-panel: #0d121c;
+      --bg-card: #121826;
+      --bg-card-hover: #182236;
+      --border-subtle: #1e293b;
+      --border-focus: #38bdf8;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --text-faint: #475569;
+      --accent-cyan: #38bdf8;
+      --accent-purple: #c084fc;
+      --accent-emerald: #10b981;
+      --accent-amber: #f59e0b;
+      --accent-rose: #f43f5e;
+      --font-display: 'Space Grotesk', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg-canvas);
+      color: var(--text-main);
+      font-family: var(--font-display);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+      background-image: 
+        radial-gradient(circle at 15% 10%, rgba(56, 189, 248, 0.08) 0%, transparent 40%),
+        radial-gradient(circle at 85% 20%, rgba(192, 132, 252, 0.07) 0%, transparent 40%),
+        linear-gradient(to bottom, transparent 95%, rgba(15, 23, 42, 0.4) 100%);
+    }
+
+    /* Top Bar / Header */
+    header {
+      border-bottom: 1px solid var(--border-subtle);
+      background: rgba(13, 18, 28, 0.85);
+      backdrop-filter: blur(12px);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      padding: 14px 28px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .brand-id {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .brand-badge {
+      width: 38px;
+      height: 38px;
+      background: linear-gradient(135deg, #0e1526, #060913);
+      border: 1.5px solid rgba(56, 189, 248, 0.4);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-display);
+      font-size: 15px;
+      font-weight: 800;
+      color: var(--accent-cyan);
+      box-shadow: 0 0 16px rgba(56, 189, 248, 0.2);
+    }
+
+    .brand-title h1 {
+      font-size: 19px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .brand-title h1 span.logo-x {
+      background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .tag-ai {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 600;
+      background: rgba(56, 189, 248, 0.12);
+      border: 1px solid rgba(56, 189, 248, 0.3);
+      color: var(--accent-cyan);
+      padding: 2px 7px;
+      border-radius: 4px;
+      letter-spacing: 0.05em;
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      font-weight: 600;
+      padding: 8px 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      border: 1px solid transparent;
+      text-decoration: none;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #0284c7, #2563eb);
+      color: #ffffff;
+      border-color: rgba(56, 189, 248, 0.5);
+      box-shadow: 0 0 16px rgba(14, 165, 233, 0.3);
+    }
+
+    .btn-primary:hover {
+      background: linear-gradient(135deg, #0ea5e9, #3b82f6);
+      box-shadow: 0 0 24px rgba(56, 189, 248, 0.5);
+      transform: translateY(-1px);
+    }
+
+    .btn-secondary {
+      background: var(--bg-card);
+      color: var(--text-main);
+      border-color: var(--border-subtle);
+    }
+
+    .btn-secondary:hover {
+      background: var(--bg-card-hover);
+      border-color: var(--text-muted);
+    }
+
+    .btn-emerald {
+      background: rgba(16, 185, 129, 0.15);
+      color: #34d399;
+      border-color: rgba(16, 185, 129, 0.3);
+    }
+
+    .btn-emerald:hover {
+      background: rgba(16, 185, 129, 0.25);
+      border-color: #34d399;
+    }
+
+    /* Main Container */
+    main {
+      flex: 1;
+      max-width: 1440px;
+      margin: 0 auto;
+      width: 100%;
+      padding: 28px 28px 60px;
+      display: flex;
+      flex-direction: column;
+      gap: 32px;
+    }
+
+    /* Control Ribbon */
+    .control-ribbon {
+      background: var(--bg-panel);
+      border: 1px solid var(--border-subtle);
+      border-radius: 14px;
+      padding: 16px 20px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .control-group {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .control-label {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .segmented-control {
+      display: flex;
+      background: var(--bg-canvas);
+      border: 1px solid var(--border-subtle);
+      border-radius: 8px;
+      padding: 3px;
+      gap: 2px;
+    }
+
+    .segmented-btn {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--text-muted);
+      background: transparent;
+      border: none;
+      padding: 6px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .segmented-btn:hover {
+      color: var(--text-main);
+    }
+
+    .segmented-btn.active {
+      background: var(--bg-card-hover);
+      color: var(--accent-cyan);
+      font-weight: 600;
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
+    }
+
+    .theme-swatches {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .swatch {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      cursor: pointer;
+      border: 2px solid transparent;
+      transition: transform 0.15s ease, border-color 0.15s ease;
+      position: relative;
+    }
+
+    .swatch:hover {
+      transform: scale(1.15);
+    }
+
+    .swatch.active {
+      border-color: #ffffff;
+      transform: scale(1.15);
+      box-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+    }
+
+    /* Tabs Navigation */
+    .tabs-nav {
+      display: flex;
+      gap: 8px;
+      border-bottom: 1px solid var(--border-subtle);
+      padding-bottom: 2px;
+    }
+
+    .tab-btn {
+      font-family: var(--font-mono);
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-muted);
+      background: transparent;
+      border: none;
+      padding: 10px 18px;
+      border-radius: 8px 8px 0 0;
+      cursor: pointer;
+      position: relative;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .tab-btn:hover {
+      color: var(--text-main);
+      background: rgba(255, 255, 255, 0.03);
+    }
+
+    .tab-btn.active {
+      color: var(--accent-cyan);
+      background: var(--bg-panel);
+    }
+
+    .tab-btn.active::after {
+      content: '';
+      position: absolute;
+      bottom: -3px;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--accent-cyan), var(--accent-purple));
+      border-radius: 3px 3px 0 0;
+    }
+
+    .tab-badge {
+      font-size: 10px;
+      padding: 1px 6px;
+      border-radius: 10px;
+      background: rgba(56, 189, 248, 0.15);
+      color: var(--accent-cyan);
+    }
+
+    /* Tab Content Grid */
+    .tab-pane {
+      display: none;
+      animation: fadeIn 0.25s ease;
+    }
+
+    .tab-pane.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Logo Showcase Grid */
+    .showcase-grid {
+      display: grid;
+      grid-template-columns: 1.2fr 1fr;
+      gap: 28px;
+      align-items: start;
+    }
+
+    @media (max-width: 1024px) {
+      .showcase-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Canvas Stage Card */
+    .stage-card {
+      background: var(--bg-panel);
+      border: 1px solid var(--border-subtle);
+      border-radius: 18px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .stage-header {
+      padding: 14px 20px;
+      background: rgba(255, 255, 255, 0.02);
+      border-bottom: 1px solid var(--border-subtle);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .stage-title {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .stage-canvas-wrapper {
+      padding: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 380px;
+      position: relative;
+      transition: background 0.3s ease;
+    }
+
+    /* Background Styles for Canvas */
+    .bg-pitch-dark { background-color: #06080d; }
+    .bg-dark-obsidian { background-color: #0b1120; }
+    .bg-clean-light { 
+      background-color: #ffffff; 
+      box-shadow: inset 0 0 100px rgba(0, 0, 0, 0.05);
+    }
+    .bg-transparent-grid {
+      background-color: #111827;
+      background-image: 
+        linear-gradient(45deg, #1f2937 25%, transparent 25%), 
+        linear-gradient(-45deg, #1f2937 25%, transparent 25%), 
+        linear-gradient(45deg, transparent 75%, #1f2937 75%), 
+        linear-gradient(-45deg, transparent 75%, #1f2937 75%);
+      background-size: 20px 20px;
+      background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
+    }
+    .bg-blueprint {
+      background-color: #07152b;
+      background-image: 
+        linear-gradient(rgba(56, 189, 248, 0.1) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(56, 189, 248, 0.1) 1px, transparent 1px);
+      background-size: 24px 24px;
+    }
+
+    .logo-container {
+      max-width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.2s ease;
+    }
+
+    .logo-container svg {
+      max-width: 100%;
+      height: auto;
+      filter: drop-shadow(0 12px 24px rgba(0, 0, 0, 0.4));
+    }
+
+    /* Stage Footer / Info */
+    .stage-footer {
+      padding: 12px 20px;
+      background: rgba(255, 255, 255, 0.015);
+      border-top: 1px solid var(--border-subtle);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--text-faint);
+    }
+
+    /* Export Panel */
+    .export-panel {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .panel-box {
+      background: var(--bg-panel);
+      border: 1px solid var(--border-subtle);
+      border-radius: 16px;
+      padding: 22px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .panel-box h3 {
+      font-size: 15px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .resolution-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+      gap: 10px;
+    }
+
+    .res-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: 10px;
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      text-align: left;
+    }
+
+    .res-card:hover {
+      border-color: var(--accent-cyan);
+      background: var(--bg-card-hover);
+      transform: translateY(-2px);
+    }
+
+    .res-card.active {
+      border-color: var(--accent-cyan);
+      background: rgba(56, 189, 248, 0.1);
+      box-shadow: 0 0 12px rgba(56, 189, 248, 0.2);
+    }
+
+    .res-size {
+      font-family: var(--font-mono);
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
+    .res-desc {
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    .export-actions-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+      gap: 10px;
+    }
+
+    .btn-export {
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      border-radius: 10px;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 600;
+      border: 1px solid var(--border-subtle);
+      background: var(--bg-card);
+      color: var(--text-main);
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .btn-export:hover {
+      border-color: var(--accent-cyan);
+      background: var(--bg-card-hover);
+      color: var(--accent-cyan);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    }
+
+    .btn-export svg {
+      width: 20px;
+      height: 20px;
+    }
+
+    /* Live Mockup Area */
+    .mockup-container {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    .mockup-card {
+      background: var(--bg-panel);
+      border: 1px solid var(--border-subtle);
+      border-radius: 16px;
+      overflow: hidden;
+    }
+
+    .browser-mockup {
+      background: #181f2e;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .browser-chrome {
+      display: flex;
+      align-items: center;
+      padding: 10px 16px;
+      gap: 12px;
+      background: #0d121c;
+      border-bottom: 1px solid #1e293b;
+    }
+
+    .browser-dots {
+      display: flex;
+      gap: 6px;
+    }
+
+    .browser-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+    }
+
+    .dot-red { background: #ef4444; }
+    .dot-yellow { background: #f59e0b; }
+    .dot-green { background: #10b981; }
+
+    .browser-tab {
+      background: #181f2e;
+      border-radius: 8px 8px 0 0;
+      padding: 6px 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--text-main);
+      border: 1px solid #1e293b;
+      border-bottom: none;
+    }
+
+    .tab-favicon-preview {
+      width: 16px;
+      height: 16px;
+    }
+
+    .browser-viewport {
+      padding: 30px;
+      background: #080c14;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid #1e293b;
+    }
+
+    .nav-preview-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+      padding: 12px 24px;
+      background: rgba(15, 23, 42, 0.75);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 12px;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 20px;
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    .app-icon-row {
+      display: flex;
+      gap: 24px;
+      align-items: center;
+      justify-content: center;
+      padding: 32px;
+      background: radial-gradient(circle, #172554 0%, #090d16 100%);
+    }
+
+    .app-icon-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .dock-icon {
+      width: 72px;
+      height: 72px;
+      border-radius: 18px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+      transition: transform 0.2s ease;
+    }
+
+    .dock-icon:hover {
+      transform: translateY(-6px) scale(1.08);
+    }
+
+    .dock-label {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    /* Toast Notification */
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: #0d1627;
+      border: 1px solid var(--accent-cyan);
+      color: #ffffff;
+      padding: 12px 20px;
+      border-radius: 10px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6), 0 0 20px rgba(56, 189, 248, 0.3);
+      font-family: var(--font-mono);
+      font-size: 12px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      transform: translateY(100px);
+      opacity: 0;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      z-index: 1000;
+    }
+
+    .toast.show {
+      transform: translateY(0);
+      opacity: 1;
+    }
+
+    /* Footer */
+    footer {
+      border-top: 1px solid var(--border-subtle);
+      padding: 20px 28px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--text-faint);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Header -->
+  <header>
+    <div class="brand-id">
+      <div class="brand-badge">eX</div>
+      <div class="brand-title">
+        <h1>enow<span class="logo-x">X</span> <span class="tag-ai">AI CODING &amp; SUBSCRIPTION</span></h1>
+      </div>
+    </div>
+    <div class="header-actions">
+      <button class="btn btn-emerald" onclick="testLiveFavicon()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12h20M12 2v20"/></svg>
+        Uji Favicon di Tab Ini
+      </button>
+      <button class="btn btn-primary" onclick="downloadAllBrandKit()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+        Download Brand Kit (.ZIP)
+      </button>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main>
+
+    <!-- Global Control Ribbon -->
+    <div class="control-ribbon">
+      <!-- Theme Selector -->
+      <div class="control-group">
+        <span class="control-label">Palet Warna:</span>
+        <div class="theme-swatches">
+          <div class="swatch active" style="background: linear-gradient(135deg, #38bdf8, #818cf8);" title="Cyber Cyan & Indigo" onclick="setPalette('cyber', this)"></div>
+          <div class="swatch" style="background: linear-gradient(135deg, #a3e635, #10b981);" title="Acid Lime & Terminal Green" onclick="setPalette('acid', this)"></div>
+          <div class="swatch" style="background: linear-gradient(135deg, #c084fc, #ec4899);" title="Electric Violet & Pink" onclick="setPalette('violet', this)"></div>
+          <div class="swatch" style="background: linear-gradient(135deg, #fb7185, #f59e0b);" title="Sunset Flame & Amber" onclick="setPalette('sunset', this)"></div>
+          <div class="swatch" style="background: linear-gradient(135deg, #ffffff, #94a3b8);" title="Platinum Monochrome" onclick="setPalette('monochrome', this)"></div>
+        </div>
+      </div>
+
+      <!-- Background Switcher -->
+      <div class="control-group">
+        <span class="control-label">Background Preview:</span>
+        <div class="segmented-control">
+          <button class="segmented-btn active" onclick="setBg('dark-obsidian', this)">Obsidian</button>
+          <button class="segmented-btn" onclick="setBg('pitch-dark', this)">Pitch</button>
+          <button class="segmented-btn" onclick="setBg('clean-light', this)">Light</button>
+          <button class="segmented-btn" onclick="setBg('transparent-grid', this)">Transparan</button>
+          <button class="segmented-btn" onclick="setBg('blueprint', this)">Blueprint</button>
+        </div>
+      </div>
+
+      <!-- Container / Badge Mode -->
+      <div class="control-group">
+        <span class="control-label">Wadah Icon:</span>
+        <div class="segmented-control">
+          <button class="segmented-btn active" onclick="setBadgeMode(true, this)">Squircle Badge</button>
+          <button class="segmented-btn" onclick="setBadgeMode(false, this)">Tanpa Wadah (Glyph Murni)</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tabs Navigation -->
+    <div class="tabs-nav">
+      <button class="tab-btn active" onclick="switchTab('tab-favicon', this)">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="4"/></svg>
+        1. Favicon &amp; App Icon (eX)
+        <span class="tab-badge">HD</span>
+      </button>
+      <button class="tab-btn" onclick="switchTab('tab-full', this)">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7V4h16v3M9 20h6M12 4v16"/></svg>
+        2. Logo Penuh (enowX)
+        <span class="tab-badge">Wordmark</span>
+      </button>
+      <button class="tab-btn" onclick="switchTab('tab-mockups', this)">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+        3. Live Showcase &amp; Mockup
+      </button>
+    </div>
+
+    <!-- TAB 1: FAVICON & APP ICON (eX) -->
+    <div id="tab-favicon" class="tab-pane active">
+      <div class="showcase-grid">
+        <!-- Canvas Stage -->
+        <div class="stage-card">
+          <div class="stage-header">
+            <div class="stage-title">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/></svg>
+              <span>Preview Master Vector • Monogram <strong>eX</strong></span>
+            </div>
+            <button class="btn btn-secondary" style="padding: 4px 10px; font-size: 11px;" onclick="copySvgCode('svg-emblem-render')">
+              Salin SVG Code
+            </button>
+          </div>
+
+          <div id="emblem-canvas-wrapper" class="stage-canvas-wrapper bg-dark-obsidian">
+            <div class="logo-container" id="emblem-stage" style="width: 280px; height: 280px;">
+              <!-- Dynamic SVG will be rendered here -->
+            </div>
+          </div>
+
+          <div class="stage-footer">
+            <span>Resolusi Master: 512×512 Vector Precision</span>
+            <span>Rasio: 1:1 Aspect Ratio</span>
+          </div>
+        </div>
+
+        <!-- Export Controls -->
+        <div class="export-panel">
+          <!-- Preset Ukuran Favicon -->
+          <div class="panel-box">
+            <h3>Pilih Ukuran Favicon / App Icon:</h3>
+            <div class="resolution-grid" id="emblem-res-grid">
+              <div class="res-card" data-size="16" onclick="selectEmblemSize(16, this)">
+                <span class="res-size">16 × 16 px</span>
+                <span class="res-desc">Browser Standard</span>
+              </div>
+              <div class="res-card active" data-size="32" onclick="selectEmblemSize(32, this)">
+                <span class="res-size">32 × 32 px</span>
+                <span class="res-desc">Retina Favicon</span>
+              </div>
+              <div class="res-card" data-size="48" onclick="selectEmblemSize(48, this)">
+                <span class="res-size">48 × 48 px</span>
+                <span class="res-desc">Desktop Shortcut</span>
+              </div>
+              <div class="res-card" data-size="64" onclick="selectEmblemSize(64, this)">
+                <span class="res-size">64 × 64 px</span>
+                <span class="res-desc">HiDPI Favicon</span>
+              </div>
+              <div class="res-card" data-size="128" onclick="selectEmblemSize(128, this)">
+                <span class="res-size">128 × 128 px</span>
+                <span class="res-desc">Web App Icon</span>
+              </div>
+              <div class="res-card" data-size="180" onclick="selectEmblemSize(180, this)">
+                <span class="res-size">180 × 180 px</span>
+                <span class="res-desc">Apple Touch (iOS)</span>
+              </div>
+              <div class="res-card" data-size="192" onclick="selectEmblemSize(192, this)">
+                <span class="res-size">192 × 192 px</span>
+                <span class="res-desc">Android Chrome</span>
+              </div>
+              <div class="res-card" data-size="512" onclick="selectEmblemSize(512, this)">
+                <span class="res-size">512 × 512 px</span>
+                <span class="res-desc">PWA Splash / HD</span>
+              </div>
+              <div class="res-card" data-size="1024" onclick="selectEmblemSize(1024, this)">
+                <span class="res-size">1024 × 1024 px</span>
+                <span class="res-desc">Master App Store</span>
+              </div>
+              <div class="res-card" data-size="2048" onclick="selectEmblemSize(2048, this)">
+                <span class="res-size">2048 × 2048 px</span>
+                <span class="res-desc">Ultra HD 4K Master</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Format Download Buttons -->
+          <div class="panel-box">
+            <h3>Download Favicon / Icon eX:</h3>
+            <div class="export-actions-grid">
+              <button class="btn-export" onclick="downloadEmblemPNG()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                <span>PNG HD</span>
+                <small id="emblem-png-label">32×32 px</small>
+              </button>
+
+              <button class="btn-export" onclick="downloadEmblemSVG()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
+                <span>Vector SVG</span>
+                <small>Scalable lossless</small>
+              </button>
+
+              <button class="btn-export" onclick="downloadEmblemICO()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                <span>Favicon .ICO</span>
+                <small>Multi-res (16,32,48)</small>
+              </button>
+
+              <button class="btn-export" onclick="downloadEmblemWebP()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+                <span>WebP</span>
+                <small>Compressed</small>
+              </button>
+
+              <button class="btn-export" onclick="downloadEmblemJPEG()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M8.5 10a1.5 1.5 0 100-3 1.5 1.5 0 000 3z"/><path d="M21 15l-5-5L5 21"/></svg>
+                <span>JPEG HD</span>
+                <small>Solid BG</small>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 2: FULL LOGO (enowX) -->
+    <div id="tab-full" class="tab-pane">
+      <div class="showcase-grid">
+        <!-- Canvas Stage -->
+        <div class="stage-card">
+          <div class="stage-header">
+            <div class="stage-title">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7V4h16v3M9 20h6M12 4v16"/></svg>
+              <span>Preview Master Vector • <strong>Logo Penuh enowX</strong></span>
+            </div>
+            <div style="display: flex; gap: 8px;">
+              <button class="btn btn-secondary" style="padding: 4px 10px; font-size: 11px;" onclick="copySvgCode('svg-full-render')">
+                Salin SVG Code
+              </button>
+            </div>
+          </div>
+
+          <div id="full-canvas-wrapper" class="stage-canvas-wrapper bg-dark-obsidian">
+            <div class="logo-container" id="full-stage" style="width: 100%; max-width: 620px;">
+              <!-- Dynamic Full SVG rendered here -->
+            </div>
+          </div>
+
+          <div class="stage-footer">
+            <span>Rasio Landscape Header: 920 × 220 Vector Master</span>
+            <span>Tipografi Geometris Presisi</span>
+          </div>
+        </div>
+
+        <!-- Export Controls -->
+        <div class="export-panel">
+          <!-- Layout Selector -->
+          <div class="panel-box">
+            <h3>Tata Letak Logo Penuh:</h3>
+            <div class="segmented-control" style="width: 100%;">
+              <button class="segmented-btn active" style="flex: 1;" onclick="setFullLayout('horizontal', this)">Horizontal (Emblem + Teks)</button>
+              <button class="segmented-btn" style="flex: 1;" onclick="setFullLayout('wordmark', this)">Wordmark Saja</button>
+              <button class="segmented-btn" style="flex: 1;" onclick="setFullLayout('stacked', this)">Stacked Hero (Center)</button>
+            </div>
+          </div>
+
+          <!-- Preset Ukuran Full Logo -->
+          <div class="panel-box">
+            <h3>Pilih Ukuran Resolusi Full Logo:</h3>
+            <div class="resolution-grid" id="full-res-grid">
+              <div class="res-card" data-w="460" data-h="110" onclick="selectFullSize(460, 110, this)">
+                <span class="res-size">460 × 110 px</span>
+                <span class="res-desc">Small Web Navbar</span>
+              </div>
+              <div class="res-card active" data-w="920" data-h="220" onclick="selectFullSize(920, 220, this)">
+                <span class="res-size">920 × 220 px</span>
+                <span class="res-desc">Standard Header (1x)</span>
+              </div>
+              <div class="res-card" data-w="1840" data-h="440" onclick="selectFullSize(1840, 440, this)">
+                <span class="res-size">1840 × 440 px</span>
+                <span class="res-desc">Retina 2x Crisp</span>
+              </div>
+              <div class="res-card" data-w="3680" data-h="880" onclick="selectFullSize(3680, 880, this)">
+                <span class="res-size">3680 × 880 px</span>
+                <span class="res-desc">Ultra HD 4K Master</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Format Download Buttons -->
+          <div class="panel-box">
+            <h3>Download Logo Penuh enowX:</h3>
+            <div class="export-actions-grid">
+              <button class="btn-export" onclick="downloadFullPNG()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                <span>PNG HD</span>
+                <small id="full-png-label">920×220 px</small>
+              </button>
+
+              <button class="btn-export" onclick="downloadFullSVG()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
+                <span>Vector SVG</span>
+                <small>Lossless Scalable</small>
+              </button>
+
+              <button class="btn-export" onclick="downloadFullWebP()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+                <span>WebP</span>
+                <small>Web Optimized</small>
+              </button>
+
+              <button class="btn-export" onclick="downloadFullJPEG()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M8.5 10a1.5 1.5 0 100-3 1.5 1.5 0 000 3z"/><path d="M21 15l-5-5L5 21"/></svg>
+                <span>JPEG HD</span>
+                <small>Solid Background</small>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 3: LIVE MOCKUPS -->
+    <div id="tab-mockups" class="tab-pane">
+      <div class="mockup-container">
+        <!-- Mockup 1: Real Browser Header Simulation -->
+        <div class="mockup-card">
+          <div class="browser-chrome">
+            <div class="browser-dots">
+              <div class="browser-dot dot-red"></div>
+              <div class="browser-dot dot-yellow"></div>
+              <div class="browser-dot dot-green"></div>
+            </div>
+            <div class="browser-tab">
+              <div class="tab-favicon-preview" id="mockup-tab-favicon"></div>
+              <span>enowX • AI Coding Platform &amp; Subscription</span>
+            </div>
+          </div>
+
+          <div class="browser-viewport">
+            <!-- Simulated SaaS Navbar -->
+            <div class="nav-preview-bar">
+              <div id="mockup-navbar-logo" style="height: 38px; display: flex; align-items: center;"></div>
+              <div class="nav-links">
+                <span style="color: var(--accent-cyan);">Models</span>
+                <span>Pricing</span>
+                <span>API Docs</span>
+                <span>Subscription</span>
+              </div>
+              <div>
+                <button class="btn btn-primary" style="padding: 6px 14px; font-size: 11px;">Mulai Gratis</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Mockup 2: Desktop App Icon / Dock Simulation -->
+        <div class="mockup-card">
+          <div class="stage-header">
+            <span class="stage-title">Simulasi Tampilan App Icon di macOS Dock &amp; Mobile Home Screen</span>
+          </div>
+          <div class="app-icon-row">
+            <div class="app-icon-item">
+              <div class="dock-icon" id="mockup-dock-1"></div>
+              <span class="dock-label">enowX</span>
+            </div>
+            <div class="app-icon-item">
+              <div class="dock-icon" style="background: #1e293b; display:flex; align-items:center; justify-content:center; color: #64748b; font-family:var(--font-mono); font-size:24px;">⌘</div>
+              <span class="dock-label">Terminal</span>
+            </div>
+            <div class="app-icon-item">
+              <div class="dock-icon" style="background: #0284c7; display:flex; align-items:center; justify-content:center; color: #ffffff; font-family:var(--font-mono); font-size:24px;">VS</div>
+              <span class="dock-label">Code</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Toast Element -->
+  <div id="toast" class="toast">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+    <span id="toast-text">File berhasil diunduh!</span>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    <div>enowX Design System • Dibuat khusus untuk AI Coding Tools &amp; Subscription AI</div>
+    <div>100% Client-Side Vector Engine • HD Lossless Export</div>
+  </footer>
+
+  <!-- STUDIO JAVASCRIPT ENGINE -->
+  <script>
+    // State
+    const state = {
+      palette: 'cyber',
+      bg: 'dark-obsidian',
+      showBadge: true,
+      fullLayout: 'horizontal',
+      emblemSize: 32,
+      fullWidth: 920,
+      fullHeight: 220,
+      palettes: {
+        cyber: {
+          name: 'Cyber Cyan & Indigo',
+          primary: '#38bdf8',
+          secondary: '#818cf8',
+          accent: '#c084fc',
+          glow: '#38bdf8',
+          badgeBg1: '#0f172a',
+          badgeBg2: '#020617'
+        },
+        acid: {
+          name: 'Acid Lime & Terminal Green',
+          primary: '#a3e635',
+          secondary: '#10b981',
+          accent: '#34d399',
+          glow: '#a3e635',
+          badgeBg1: '#111a12',
+          badgeBg2: '#040905'
+        },
+        violet: {
+          name: 'Electric Violet & Pink',
+          primary: '#c084fc',
+          secondary: '#ec4899',
+          accent: '#f43f5e',
+          glow: '#c084fc',
+          badgeBg1: '#1a102a',
+          badgeBg2: '#090412'
+        },
+        sunset: {
+          name: 'Sunset Flame & Amber',
+          primary: '#fb7185',
+          secondary: '#f59e0b',
+          accent: '#fbbf24',
+          glow: '#fb7185',
+          badgeBg1: '#1c130d',
+          badgeBg2: '#0a0604'
+        },
+        monochrome: {
+          name: 'Platinum Monochrome',
+          primary: '#ffffff',
+          secondary: '#94a3b8',
+          accent: '#cbd5e1',
+          glow: '#ffffff',
+          badgeBg1: '#18181b',
+          badgeBg2: '#09090b'
+        }
+      }
+    };
+
+    // Vector Generator: Monogram eX
+    function getEmblemSVGMarkup(options = {}) {
+      const p = state.palettes[state.palette];
+      const showBadge = options.showBadge !== undefined ? options.showBadge : state.showBadge;
+      const id = options.id || 'emblem_render';
+      const isCleanLight = state.bg === 'clean-light';
+      
+      const badgeBg1 = p.badgeBg1;
+      const badgeBg2 = p.badgeBg2;
+
+      return `<svg id="${id}" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="100%" height="100%">
+  <defs>
+    <linearGradient id="${id}_pGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="${p.primary}"/>
+      <stop offset="60%" stop-color="${p.primary}"/>
+      <stop offset="100%" stop-color="${p.secondary}"/>
+    </linearGradient>
+    <linearGradient id="${id}_aGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="${p.accent}"/>
+      <stop offset="50%" stop-color="${p.secondary}"/>
+      <stop offset="100%" stop-color="${p.secondary}"/>
+    </linearGradient>
+    <linearGradient id="${id}_bgGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="${badgeBg1}"/>
+      <stop offset="100%" stop-color="${badgeBg2}"/>
+    </linearGradient>
+    <linearGradient id="${id}_borderGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="${p.primary}" stop-opacity="0.8"/>
+      <stop offset="50%" stop-color="${p.secondary}" stop-opacity="0.3"/>
+      <stop offset="100%" stop-color="${p.accent}" stop-opacity="0.7"/>
+    </linearGradient>
+    <filter id="${id}_glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="10" result="blur"/>
+      <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+    </filter>
+    <filter id="${id}_shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="8" stdDeviation="12" flood-color="#000000" flood-opacity="0.6"/>
+    </filter>
+  </defs>
+
+  ${showBadge ? `
+  <!-- Squircle App Badge -->
+  <rect x="24" y="24" width="464" height="464" rx="112" fill="url(#${id}_bgGrad)" stroke="url(#${id}_borderGrad)" stroke-width="3.5"/>
+  <rect x="24" y="24" width="464" height="464" rx="112" fill="none" stroke="#ffffff" stroke-width="1" stroke-opacity="0.1"/>
+  
+  <circle cx="256" cy="256" r="185" fill="none" stroke="${p.primary}" stroke-width="1" stroke-opacity="0.12" stroke-dasharray="6 6"/>
+  <circle cx="256" cy="256" r="125" fill="none" stroke="${p.accent}" stroke-width="1" stroke-opacity="0.08"/>
+  ` : ''}
+
+  <!-- Master Monogram eX -->
+  <g transform="translate(6, 0)">
+    <!-- THE 'e' (Continuous EvenOdd Path: zero background color dependency) -->
+    <path fill-rule="evenodd" d="M 244 238 L 92 238 C 92 195 126 160 168 160 C 210 160 244 195 244 238 L 244 266 L 128 266 C 130 290 148 306 168 306 C 190 306 205 294 212 276 L 244 292 C 230 324 202 342 168 342 C 122 342 92 306 92 264 L 92 238 Z M 128 238 L 208 238 C 206 208 190 188 168 188 C 146 188 130 208 128 238 Z" fill="url(#${id}_pGrad)" filter="url(#${id}_glow)"/>
+
+    <!-- THE 'X' -->
+    <!-- Diagonal 1 (\\) -->
+    <path d="M 276 160 L 320 160 L 418 342 L 374 342 Z" fill="url(#${id}_pGrad)"/>
+
+    <!-- Diagonal 2 (//) with 3D Tech Depth Gap -->
+    <path d="M 276 342 L 320 342 L 348 296 L 318 272 Z" fill="url(#${id}_aGrad)"/>
+    <path d="M 366 260 L 396 206 L 418 160 L 374 160 L 338 226 Z" fill="url(#${id}_aGrad)" filter="url(#${id}_glow)"/>
+
+    <!-- AI Core Fusion Node -->
+    <circle cx="347" cy="250" r="5" fill="#ffffff" filter="url(#${id}_glow)"/>
+  </g>
+</svg>`;
+    }
+
+    // Vector Generator: Full Logo enowX
+    function getFullLogoSVGMarkup(options = {}) {
+      const p = state.palettes[state.palette];
+      const id = options.id || 'full_render';
+      const layout = options.layout || state.fullLayout;
+      const isCleanLight = state.bg === 'clean-light';
+      const textColor = isCleanLight ? '#090d16' : '#ffffff';
+      const subColor = isCleanLight ? '#475569' : '#94a3b8';
+      const showBadge = state.showBadge;
+
+      if (layout === 'wordmark') {
+        // Wordmark Only (No left emblem)
+        return `<svg id="${id}" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 180" width="100%" height="100%">
+  <defs>
+    <linearGradient id="${id}_pGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="${p.primary}"/>
+      <stop offset="60%" stop-color="${p.primary}"/>
+      <stop offset="100%" stop-color="${p.secondary}"/>
+    </linearGradient>
+    <linearGradient id="${id}_aGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="${p.accent}"/>
+      <stop offset="100%" stop-color="${p.secondary}"/>
+    </linearGradient>
+    <filter id="${id}_glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="8" result="blur"/>
+      <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+    </filter>
+  </defs>
+
+  <g transform="translate(60, 20)">
+    <text x="0" y="102" font-family="'Space Grotesk', -apple-system, sans-serif" font-size="94" font-weight="700" letter-spacing="-0.035em" fill="${textColor}">enow</text>
+    <!-- Stylized Hero X -->
+    <g transform="translate(252, 28) scale(0.42)">
+      <path d="M 12 0 L 64 0 L 176 182 L 124 182 Z" fill="url(#${id}_pGrad)"/>
+      <path d="M 12 182 L 64 182 L 96 130 L 62 102 Z" fill="url(#${id}_aGrad)"/>
+      <path d="M 116 90 L 150 34 L 176 0 L 124 0 L 84 64 Z" fill="url(#${id}_aGrad)" filter="url(#${id}_glow)"/>
+      <circle cx="94" cy="88" r="5" fill="#ffffff" filter="url(#${id}_glow)"/>
+    </g>
+
+    <text x="4" y="136" font-family="'JetBrains Mono', monospace" font-size="14" font-weight="600" letter-spacing="0.28em" fill="${subColor}">AI CODING &amp; SUBSCRIPTIONS</text>
+  </g>
+</svg>`;
+      } else if (layout === 'stacked') {
+        // Stacked Hero / Centered
+        return `<svg id="${id}" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 600" width="100%" height="100%">
+  <defs>
+    <linearGradient id="${id}_pGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="${p.primary}"/>
+      <stop offset="60%" stop-color="${p.primary}"/>
+      <stop offset="100%" stop-color="${p.secondary}"/>
+    </linearGradient>
+    <linearGradient id="${id}_aGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="${p.accent}"/>
+      <stop offset="100%" stop-color="${p.secondary}"/>
+    </linearGradient>
+    <linearGradient id="${id}_bgGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="${p.badgeBg1}"/>
+      <stop offset="100%" stop-color="${p.badgeBg2}"/>
+    </linearGradient>
+    <linearGradient id="${id}_borderGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="${p.primary}" stop-opacity="0.8"/>
+      <stop offset="50%" stop-color="${p.secondary}" stop-opacity="0.3"/>
+      <stop offset="100%" stop-color="${p.accent}" stop-opacity="0.7"/>
+    </linearGradient>
+    <filter id="${id}_glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="10" result="blur"/>
+      <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+    </filter>
+    <filter id="${id}_shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="10" stdDeviation="14" flood-color="#000000" flood-opacity="0.5"/>
+    </filter>
+  </defs>
+
+  <!-- Centered Top Emblem -->
+  <g transform="translate(170, 50)" filter="url(#${id}_shadow)">
+    ${showBadge ? `
+    <rect x="0" y="0" width="260" height="260" rx="64" fill="url(#${id}_bgGrad)" stroke="url(#${id}_borderGrad)" stroke-width="3"/>
+    <circle cx="130" cy="130" r="100" fill="none" stroke="${p.primary}" stroke-width="1" stroke-opacity="0.1" stroke-dasharray="6 6"/>
+    ` : ''}
+    <g transform="translate(${showBadge ? 8 : -30}, ${showBadge ? -2 : -40}) scale(${showBadge ? 0.47 : 0.62})">
+      <path fill-rule="evenodd" d="M 244 238 L 92 238 C 92 195 126 160 168 160 C 210 160 244 195 244 238 L 244 266 L 128 266 C 130 290 148 306 168 306 C 190 306 205 294 212 276 L 244 292 C 230 324 202 342 168 342 C 122 342 92 306 92 264 L 92 238 Z M 128 238 L 208 238 C 206 208 190 188 168 188 C 146 188 130 208 128 238 Z" fill="url(#${id}_pGrad)" filter="url(#${id}_glow)"/>
+      <path d="M 276 160 L 320 160 L 418 342 L 374 342 Z" fill="url(#${id}_pGrad)"/>
+      <path d="M 276 342 L 320 342 L 348 296 L 318 272 Z" fill="url(#${id}_aGrad)"/>
+      <path d="M 366 260 L 396 206 L 418 160 L 374 160 L 338 226 Z" fill="url(#${id}_aGrad)" filter="url(#${id}_glow)"/>
+      <circle cx="347" cy="250" r="5" fill="#ffffff" filter="url(#${id}_glow)"/>
+    </g>
+  </g>
+
+  <!-- Centered Typography -->
+  <g transform="translate(130, 390)">
+    <text x="0" y="80" font-family="'Space Grotesk', -apple-system, sans-serif" font-size="86" font-weight="700" letter-spacing="-0.035em" fill="${textColor}">enow</text>
+    <g transform="translate(232, 16) scale(0.38)">
+      <path d="M 12 0 L 64 0 L 176 182 L 124 182 Z" fill="url(#${id}_pGrad)"/>
+      <path d="M 12 182 L 64 182 L 96 130 L 62 102 Z" fill="url(#${id}_aGrad)"/>
+      <path d="M 116 90 L 150 34 L 176 0 L 124 0 L 84 64 Z" fill="url(#${id}_aGrad)" filter="url(#${id}_glow)"/>
+      <circle cx="94" cy="88" r="5" fill="#ffffff" filter="url(#${id}_glow)"/>
+    </g>
+    <text x="-40" y="125" font-family="'JetBrains Mono', monospace" font-size="15" font-weight="600" letter-spacing="0.25em" fill="${subColor}">AI CODING &amp; SUBSCRIPTIONS</text>
+  </g>
+</svg>`;
+      }
+
+      // Default: Horizontal Lockup (Emblem + Wordmark)
+      return `<svg id="${id}" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 920 220" width="100%" height="100%">
+  <defs>
+    <linearGradient id="${id}_pGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="${p.primary}"/>
+      <stop offset="60%" stop-color="${p.primary}"/>
+      <stop offset="100%" stop-color="${p.secondary}"/>
+    </linearGradient>
+    <linearGradient id="${id}_aGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="${p.accent}"/>
+      <stop offset="50%" stop-color="${p.secondary}"/>
+      <stop offset="100%" stop-color="${p.secondary}"/>
+    </linearGradient>
+    <linearGradient id="${id}_bgGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="${p.badgeBg1}"/>
+      <stop offset="100%" stop-color="${p.badgeBg2}"/>
+    </linearGradient>
+    <linearGradient id="${id}_borderGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="${p.primary}" stop-opacity="0.8"/>
+      <stop offset="50%" stop-color="${p.secondary}" stop-opacity="0.3"/>
+      <stop offset="100%" stop-color="${p.accent}" stop-opacity="0.7"/>
+    </linearGradient>
+    <filter id="${id}_glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="8" result="blur"/>
+      <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+    </filter>
+    <filter id="${id}_shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="6" stdDeviation="10" flood-color="#000000" flood-opacity="0.5"/>
+    </filter>
+  </defs>
+
+  <!-- Left: Emblem eX -->
+  <g transform="translate(36, 30)" filter="url(#${id}_shadow)">
+    ${showBadge ? `
+    <rect x="0" y="0" width="160" height="160" rx="40" fill="url(#${id}_bgGrad)" stroke="url(#${id}_borderGrad)" stroke-width="2.5"/>
+    <rect x="0" y="0" width="160" height="160" rx="40" fill="none" stroke="#ffffff" stroke-width="1" stroke-opacity="0.12"/>
+    <circle cx="80" cy="80" r="62" fill="none" stroke="${p.primary}" stroke-width="1" stroke-opacity="0.12" stroke-dasharray="4 4"/>
+    <circle cx="80" cy="80" r="42" fill="none" stroke="${p.accent}" stroke-width="1" stroke-opacity="0.08"/>
+    ` : ''}
+
+    <g transform="translate(${showBadge ? 5 : -14}, ${showBadge ? -1 : -24}) scale(${showBadge ? 0.29 : 0.39})">
+      <path fill-rule="evenodd" d="M 244 238 L 92 238 C 92 195 126 160 168 160 C 210 160 244 195 244 238 L 244 266 L 128 266 C 130 290 148 306 168 306 C 190 306 205 294 212 276 L 244 292 C 230 324 202 342 168 342 C 122 342 92 306 92 264 L 92 238 Z M 128 238 L 208 238 C 206 208 190 188 168 188 C 146 188 130 208 128 238 Z" fill="url(#${id}_pGrad)" filter="url(#${id}_glow)"/>
+      <path d="M 276 160 L 320 160 L 418 342 L 374 342 Z" fill="url(#${id}_pGrad)"/>
+      <path d="M 276 342 L 320 342 L 348 296 L 318 272 Z" fill="url(#${id}_aGrad)"/>
+      <path d="M 366 260 L 396 206 L 418 160 L 374 160 L 338 226 Z" fill="url(#${id}_aGrad)" filter="url(#${id}_glow)"/>
+      <circle cx="347" cy="250" r="5" fill="#ffffff" filter="url(#${id}_glow)"/>
+    </g>
+  </g>
+
+  <!-- Right: Wordmark Lockup -->
+  <g transform="translate(228, 0)">
+    <text x="0" y="118" font-family="'Space Grotesk', -apple-system, sans-serif" font-size="82" font-weight="700" letter-spacing="-0.035em" fill="${textColor}">enow</text>
+    
+    <g transform="translate(216, 56) scale(0.34)">
+      <path d="M 12 0 L 62 0 L 172 182 L 122 182 Z" fill="url(#${id}_pGrad)"/>
+      <path d="M 12 182 L 62 182 L 94 130 L 60 102 Z" fill="url(#${id}_aGrad)"/>
+      <path d="M 114 90 L 148 34 L 172 0 L 122 0 L 82 64 Z" fill="url(#${id}_aGrad)" filter="url(#${id}_glow)"/>
+      <circle cx="92" cy="88" r="5" fill="#ffffff" filter="url(#${id}_glow)"/>
+    </g>
+
+    <text x="3" y="152" font-family="'JetBrains Mono', monospace" font-size="14.5" font-weight="600" letter-spacing="0.28em" fill="${subColor}">AI CODING &amp; SUBSCRIPTIONS</text>
+    
+    <g transform="translate(4, 168)">
+      <circle cx="4" cy="4" r="3.5" fill="#10b981"/>
+      <circle cx="4" cy="4" r="7" fill="#10b981" opacity="0.25"/>
+      <text x="16" y="7.5" font-family="'JetBrains Mono', monospace" font-size="10.5" font-weight="500" letter-spacing="0.1em" fill="#64748b">AGENTIC DEVELOPER ECOSYSTEM</text>
+    </g>
+  </g>
+</svg>`;
+    }
+
+    // Render Function
+    function renderAll() {
+      // 1. Render Emblem
+      const emblemStage = document.getElementById('emblem-stage');
+      emblemStage.innerHTML = getEmblemSVGMarkup({ id: 'svg-emblem-render' });
+
+      // 2. Render Full Logo
+      const fullStage = document.getElementById('full-stage');
+      fullStage.innerHTML = getFullLogoSVGMarkup({ id: 'svg-full-render' });
+
+      // 3. Render Mockups
+      const mockupTabFavicon = document.getElementById('mockup-tab-favicon');
+      if (mockupTabFavicon) {
+        mockupTabFavicon.innerHTML = getEmblemSVGMarkup({ id: 'mockup-tab-fav-svg', showBadge: state.showBadge });
+      }
+
+      const mockupNavbarLogo = document.getElementById('mockup-navbar-logo');
+      if (mockupNavbarLogo) {
+        mockupNavbarLogo.innerHTML = getFullLogoSVGMarkup({ id: 'mockup-nav-svg', layout: 'horizontal' });
+      }
+
+      const mockupDock1 = document.getElementById('mockup-dock-1');
+      if (mockupDock1) {
+        mockupDock1.innerHTML = getEmblemSVGMarkup({ id: 'mockup-dock-svg', showBadge: true });
+      }
+    }
+
+    // Control Handlers
+    function setPalette(name, el) {
+      state.palette = name;
+      document.querySelectorAll('.theme-swatches .swatch').forEach(s => s.classList.remove('active'));
+      el.classList.add('active');
+      renderAll();
+      showToast('Palet diubah: ' + state.palettes[name].name);
+    }
+
+    function setBg(bgName, el) {
+      state.bg = bgName;
+      document.querySelectorAll('.control-ribbon .segmented-btn').forEach(b => {
+        if (b.parentElement === el.parentElement) b.classList.remove('active');
+      });
+      el.classList.add('active');
+
+      const emblemWrap = document.getElementById('emblem-canvas-wrapper');
+      const fullWrap = document.getElementById('full-canvas-wrapper');
+      const classList = ['bg-dark-obsidian', 'bg-pitch-dark', 'bg-clean-light', 'bg-transparent-grid', 'bg-blueprint'];
+      
+      classList.forEach(c => {
+        emblemWrap.classList.remove(c);
+        fullWrap.classList.remove(c);
+      });
+
+      emblemWrap.classList.add('bg-' + bgName);
+      fullWrap.classList.add('bg-' + bgName);
+      renderAll();
+    }
+
+    function setBadgeMode(show, el) {
+      state.showBadge = show;
+      el.parentElement.querySelectorAll('.segmented-btn').forEach(b => b.classList.remove('active'));
+      el.classList.add('active');
+      renderAll();
+      showToast(show ? 'Wadah Squircle Diaktifkan' : 'Mode Glyph Murni (Tanpa Wadah)');
+    }
+
+    function setFullLayout(layout, el) {
+      state.fullLayout = layout;
+      el.parentElement.querySelectorAll('.segmented-btn').forEach(b => b.classList.remove('active'));
+      el.classList.add('active');
+
+      // Adjust default preview sizes based on layout
+      const grid = document.getElementById('full-res-grid');
+      if (layout === 'wordmark') {
+        state.fullWidth = 720;
+        state.fullHeight = 180;
+      } else if (layout === 'stacked') {
+        state.fullWidth = 600;
+        state.fullHeight = 600;
+      } else {
+        state.fullWidth = 920;
+        state.fullHeight = 220;
+      }
+      document.getElementById('full-png-label').textContent = `${state.fullWidth}×${state.fullHeight} px`;
+      renderAll();
+    }
+
+    function switchTab(tabId, el) {
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+      el.classList.add('active');
+      document.getElementById(tabId).classList.add('active');
+      renderAll();
+    }
+
+    function selectEmblemSize(size, el) {
+      state.emblemSize = size;
+      document.querySelectorAll('#emblem-res-grid .res-card').forEach(c => c.classList.remove('active'));
+      el.classList.add('active');
+      document.getElementById('emblem-png-label').textContent = `${size}×${size} px`;
+    }
+
+    function selectFullSize(w, h, el) {
+      state.fullWidth = w;
+      state.fullHeight = h;
+      document.querySelectorAll('#full-res-grid .res-card').forEach(c => c.classList.remove('active'));
+      el.classList.add('active');
+      document.getElementById('full-png-label').textContent = `${w}×${h} px`;
+    }
+
+    // Helper: Trigger File Download
+    function triggerDownload(blob, filename) {
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
+      showToast(`Mengunduh: ${filename}`);
+    }
+
+    // Helper: Convert SVG String to Raster Blob via Canvas
+    function svgToCanvasBlob(svgString, width, height, mimeType = 'image/png', bgColor = null) {
+      return new Promise((resolve, reject) => {
+        const svgBlob = new Blob([svgString], { type: 'image/svg+xml;charset=utf-8' });
+        const url = URL.createObjectURL(svgBlob);
+        const img = new Image();
+
+        img.onload = () => {
+          const canvas = document.createElement('canvas');
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext('2d');
+
+          // High DPI image smoothing
+          ctx.imageSmoothingEnabled = true;
+          ctx.imageSmoothingQuality = 'high';
+
+          if (bgColor) {
+            ctx.fillStyle = bgColor;
+            ctx.fillRect(0, 0, width, height);
+          }
+
+          ctx.drawImage(img, 0, 0, width, height);
+          URL.revokeObjectURL(url);
+
+          canvas.toBlob((blob) => {
+            resolve(blob);
+          }, mimeType, 0.96);
+        };
+
+        img.onerror = (err) => {
+          URL.revokeObjectURL(url);
+          reject(err);
+        };
+
+        img.src = url;
+      });
+    }
+
+    // Helper: Copy SVG Code
+    function copySvgCode(svgId) {
+      const svgEl = document.getElementById(svgId);
+      if (svgEl) {
+        const serializer = new XMLSerializer();
+        const str = serializer.serializeToString(svgEl);
+        navigator.clipboard.writeText(str).then(() => {
+          showToast('Kode SVG berhasil disalin ke clipboard!');
+        }).catch(() => {
+          showToast('Gagal menyalin otomatis, silakan download SVG.');
+        });
+      }
+    }
+
+    // Dynamic Browser Tab Favicon Test
+    function testLiveFavicon() {
+      const svg = getEmblemSVGMarkup({ id: 'live_test_fav' });
+      const encoded = encodeURIComponent(svg);
+      const link = document.getElementById('dynamic-favicon');
+      link.href = 'data:image/svg+xml,' + encoded;
+      showToast('Favicon tab browser ini telah diperbarui dengan logo eX!');
+    }
+
+    // -------------------------------------------------------------
+    // EXPORT HANDLERS: FAVICON / EMBLEM (eX)
+    // -------------------------------------------------------------
+    function downloadEmblemSVG() {
+      const svg = getEmblemSVGMarkup({ id: 'enowx_icon_svg' });
+      const blob = new Blob([svg], { type: 'image/svg+xml;charset=utf-8' });
+      triggerDownload(blob, `enowX-favicon-${state.palette}.svg`);
+    }
+
+    async function downloadEmblemPNG() {
+      const size = state.emblemSize;
+      const svg = getEmblemSVGMarkup({ id: 'enowx_icon_png' });
+      const blob = await svgToCanvasBlob(svg, size, size, 'image/png');
+      triggerDownload(blob, `enowX-icon-${size}x${size}.png`);
+    }
+
+    async function downloadEmblemWebP() {
+      const size = state.emblemSize;
+      const svg = getEmblemSVGMarkup({ id: 'enowx_icon_webp' });
+      const blob = await svgToCanvasBlob(svg, size, size, 'image/webp');
+      triggerDownload(blob, `enowX-icon-${size}x${size}.webp`);
+    }
+
+    async function downloadEmblemJPEG() {
+      const size = state.emblemSize;
+      const svg = getEmblemSVGMarkup({ id: 'enowx_icon_jpeg' });
+      const p = state.palettes[state.palette];
+      const bg = state.bg === 'clean-light' ? '#ffffff' : p.badgeBg1;
+      const blob = await svgToCanvasBlob(svg, size, size, 'image/jpeg', bg);
+      triggerDownload(blob, `enowX-icon-${size}x${size}.jpg`);
+    }
+
+    // Binary ICO Generator (16, 32, 48 Multi-Resolution)
+    async function downloadEmblemICO() {
+      const svg = getEmblemSVGMarkup({ id: 'enowx_ico' });
+      const sizes = [16, 32, 48];
+      const pngBuffers = [];
+
+      for (const s of sizes) {
+        const blob = await svgToCanvasBlob(svg, s, s, 'image/png');
+        const buffer = await blob.arrayBuffer();
+        pngBuffers.push({ width: s, height: s, buffer });
+      }
+
+      // Build ICO Binary Container
+      const count = pngBuffers.length;
+      const headerSize = 6 + count * 16;
+      let totalSize = headerSize;
+      for (const item of pngBuffers) {
+        totalSize += item.buffer.byteLength;
+      }
+
+      const icoBuffer = new Uint8Array(totalSize);
+      const view = new DataView(icoBuffer.buffer);
+
+      // ICONDIR Header
+      view.setUint16(0, 0, true); // Reserved
+      view.setUint16(2, 1, true); // Resource Type (1 = Icon)
+      view.setUint16(4, count, true); // Number of Images
+
+      let offset = headerSize;
+      for (let i = 0; i < count; i++) {
+        const item = pngBuffers[i];
+        const entryOffset = 6 + i * 16;
+        view.setUint8(entryOffset + 0, item.width >= 256 ? 0 : item.width);
+        view.setUint8(entryOffset + 1, item.height >= 256 ? 0 : item.height);
+        view.setUint8(entryOffset + 2, 0); // Color Palette (0 = true color)
+        view.setUint8(entryOffset + 3, 0); // Reserved
+        view.setUint16(entryOffset + 4, 1, true); // Color Planes
+        view.setUint16(entryOffset + 6, 32, true); // Bits per Pixel
+        view.setUint32(entryOffset + 8, item.buffer.byteLength, true); // Size
+        view.setUint32(entryOffset + 12, offset, true); // Data Offset
+
+        icoBuffer.set(new Uint8Array(item.buffer), offset);
+        offset += item.buffer.byteLength;
+      }
+
+      const icoBlob = new Blob([icoBuffer], { type: 'image/x-icon' });
+      triggerDownload(icoBlob, 'favicon.ico');
+    }
+
+    // -------------------------------------------------------------
+    // EXPORT HANDLERS: FULL LOGO (enowX)
+    // -------------------------------------------------------------
+    function downloadFullSVG() {
+      const svg = getFullLogoSVGMarkup({ id: 'enowx_full_svg' });
+      const blob = new Blob([svg], { type: 'image/svg+xml;charset=utf-8' });
+      triggerDownload(blob, `enowX-full-logo-${state.fullLayout}-${state.palette}.svg`);
+    }
+
+    async function downloadFullPNG() {
+      const w = state.fullWidth;
+      const h = state.fullHeight;
+      const svg = getFullLogoSVGMarkup({ id: 'enowx_full_png' });
+      const blob = await svgToCanvasBlob(svg, w, h, 'image/png');
+      triggerDownload(blob, `enowX-logo-${state.fullLayout}-${w}x${h}.png`);
+    }
+
+    async function downloadFullWebP() {
+      const w = state.fullWidth;
+      const h = state.fullHeight;
+      const svg = getFullLogoSVGMarkup({ id: 'enowx_full_webp' });
+      const blob = await svgToCanvasBlob(svg, w, h, 'image/webp');
+      triggerDownload(blob, `enowX-logo-${state.fullLayout}-${w}x${h}.webp`);
+    }
+
+    async function downloadFullJPEG() {
+      const w = state.fullWidth;
+      const h = state.fullHeight;
+      const svg = getFullLogoSVGMarkup({ id: 'enowx_full_jpeg' });
+      const p = state.palettes[state.palette];
+      const bg = state.bg === 'clean-light' ? '#ffffff' : '#07090e';
+      const blob = await svgToCanvasBlob(svg, w, h, 'image/jpeg', bg);
+      triggerDownload(blob, `enowX-logo-${state.fullLayout}-${w}x${h}.jpg`);
+    }
+
+    // -------------------------------------------------------------
+    // 1-CLICK ALL BRAND ASSET KIT (.ZIP)
+    // -------------------------------------------------------------
+    async function downloadAllBrandKit() {
+      if (typeof JSZip === 'undefined') {
+        showToast('Mengunduh SVG & PNG master satu per satu...');
+        downloadEmblemSVG();
+        downloadFullSVG();
+        downloadEmblemICO();
+        return;
+      }
+
+      showToast('Mengemas seluruh Brand Assets ke dalam ZIP...');
+      const zip = new JSZip();
+
+      // Favicons folder
+      const favFolder = zip.folder("favicons");
+      const iconSizes = [16, 32, 48, 64, 180, 192, 512];
+      const emblemSvg = getEmblemSVGMarkup({ id: 'zip_emblem' });
+
+      favFolder.file("favicon.svg", emblemSvg);
+
+      for (const s of iconSizes) {
+        const pngBlob = await svgToCanvasBlob(emblemSvg, s, s, 'image/png');
+        const buf = await pngBlob.arrayBuffer();
+        if (s === 180) {
+          favFolder.file("apple-touch-icon-180x180.png", buf);
+        } else if (s === 192) {
+          favFolder.file("android-chrome-192x192.png", buf);
+        } else if (s === 512) {
+          favFolder.file("android-chrome-512x512.png", buf);
+        } else {
+          favFolder.file(`favicon-${s}x${s}.png`, buf);
+        }
+      }
+
+      // Generate binary ICO
+      const icoSizes = [16, 32, 48];
+      const pngBuffers = [];
+      for (const s of icoSizes) {
+        const b = await svgToCanvasBlob(emblemSvg, s, s, 'image/png');
+        pngBuffers.push({ width: s, height: s, buffer: await b.arrayBuffer() });
+      }
+      const count = pngBuffers.length;
+      const headerSize = 6 + count * 16;
+      let totalSize = headerSize;
+      for (const item of pngBuffers) totalSize += item.buffer.byteLength;
+      const icoBuffer = new Uint8Array(totalSize);
+      const view = new DataView(icoBuffer.buffer);
+      view.setUint16(0, 0, true);
+      view.setUint16(2, 1, true);
+      view.setUint16(4, count, true);
+      let offset = headerSize;
+      for (let i = 0; i < count; i++) {
+        const item = pngBuffers[i];
+        const entryOffset = 6 + i * 16;
+        view.setUint8(entryOffset + 0, item.width);
+        view.setUint8(entryOffset + 1, item.height);
+        view.setUint8(entryOffset + 2, 0);
+        view.setUint8(entryOffset + 3, 0);
+        view.setUint16(entryOffset + 4, 1, true);
+        view.setUint16(entryOffset + 6, 32, true);
+        view.setUint32(entryOffset + 8, item.buffer.byteLength, true);
+        view.setUint32(entryOffset + 12, offset, true);
+        icoBuffer.set(new Uint8Array(item.buffer), offset);
+        offset += item.buffer.byteLength;
+      }
+      favFolder.file("favicon.ico", icoBuffer);
+
+      // Logos folder
+      const logosFolder = zip.folder("full-logos");
+      const fullH_Svg = getFullLogoSVGMarkup({ id: 'zip_full_h', layout: 'horizontal' });
+      const fullW_Svg = getFullLogoSVGMarkup({ id: 'zip_full_w', layout: 'wordmark' });
+      const fullS_Svg = getFullLogoSVGMarkup({ id: 'zip_full_s', layout: 'stacked' });
+
+      logosFolder.file("enowX-logo-horizontal.svg", fullH_Svg);
+      logosFolder.file("enowX-logo-wordmark.svg", fullW_Svg);
+      logosFolder.file("enowX-logo-stacked.svg", fullS_Svg);
+
+      const hBlob1 = await svgToCanvasBlob(fullH_Svg, 920, 220, 'image/png');
+      logosFolder.file("enowX-horizontal-920x220.png", await hBlob1.arrayBuffer());
+
+      const hBlob2 = await svgToCanvasBlob(fullH_Svg, 1840, 440, 'image/png');
+      logosFolder.file("enowX-horizontal-retina-1840x440.png", await hBlob2.arrayBuffer());
+
+      // Brand Guide Readme
+      const readme = `=====================================================
+enowX • AI CODING TOOLS & SUBSCRIPTION BRAND ASSETS
+=====================================================
+
+Brand Name: enowX
+Tagline: AI CODING & SUBSCRIPTIONS
+Identity Concept:
+- "eX" Favicon & App Icon: Geometric harmony between AI loop logic (e) and next-gen compiler slash (X).
+- "enowX" Full Logo: Sleek developer-first typography with vibrant hero X mark.
+
+ASSET DIRECTORY:
+1. /favicons/
+   - favicon.ico (Standard multi-resolution 16, 32, 48)
+   - favicon-16x16.png
+   - favicon-32x32.png
+   - favicon-48x48.png
+   - favicon-64x64.png
+   - apple-touch-icon-180x180.png (for iOS)
+   - android-chrome-192x192.png (for Android PWA)
+   - android-chrome-512x512.png (for Android Splash)
+   - favicon.svg (Vector Favicon)
+
+2. /full-logos/
+   - enowX-logo-horizontal.svg (Ideal for website headers / navbars)
+   - enowX-logo-wordmark.svg (Clean inline wordmark)
+   - enowX-logo-stacked.svg (Centered hero splash lockup)
+   - enowX-horizontal-920x220.png
+   - enowX-horizontal-retina-1840x440.png
+
+PALETTE DEFINITIONS:
+- Cyber Cyan: #38bdf8
+- Electric Indigo: #818cf8
+- Soft Violet: #c084fc
+- Slate Obsidian: #0b1120
+- Emerald Active: #10b981
+
+Generated by enowX HD Logo Studio.
+`;
+      zip.file("README-BRAND-GUIDE.txt", readme);
+
+      const zipBlob = await zip.generateAsync({ type: "blob" });
+      triggerDownload(zipBlob, `enowX-Complete-Brand-Kit.zip`);
+    }
+
+    // Toast Function
+    function showToast(text) {
+      const t = document.getElementById('toast');
+      document.getElementById('toast-text').textContent = text;
+      t.classList.add('show');
+      setTimeout(() => {
+        t.classList.remove('show');
+      }, 3200);
+    }
+
+    // Initial Render
+    window.addEventListener('DOMContentLoaded', () => {
+      renderAll();
+    });
+  </script>
+</body>
+</html>

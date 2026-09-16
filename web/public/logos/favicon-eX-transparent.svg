@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="tpGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#38bdf8"/>
+      <stop offset="60%" stop-color="#38bdf8"/>
+      <stop offset="100%" stop-color="#818cf8"/>
+    </linearGradient>
+    <linearGradient id="taGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#c084fc"/>
+      <stop offset="50%" stop-color="#818cf8"/>
+      <stop offset="100%" stop-color="#818cf8"/>
+    </linearGradient>
+    <filter id="tglow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="12" result="blur"/>
+      <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+    </filter>
+  </defs>
+
+  <g transform="translate(6, 0)">
+    <path fill-rule="evenodd" d="M 244 238 L 92 238 C 92 195 126 160 168 160 C 210 160 244 195 244 238 L 244 266 L 128 266 C 130 290 148 306 168 306 C 190 306 205 294 212 276 L 244 292 C 230 324 202 342 168 342 C 122 342 92 306 92 264 L 92 238 Z M 128 238 L 208 238 C 206 208 190 188 168 188 C 146 188 130 208 128 238 Z" fill="url(#tpGrad)" filter="url(#tglow)"/>
+    <path d="M 276 160 L 320 160 L 418 342 L 374 342 Z" fill="url(#tpGrad)"/>
+    <path d="M 276 342 L 320 342 L 348 296 L 318 272 Z" fill="url(#taGrad)"/>
+    <path d="M 366 260 L 396 206 L 418 160 L 374 160 L 338 226 Z" fill="url(#taGrad)" filter="url(#tglow)"/>
+    <circle cx="347" cy="250" r="5" fill="#ffffff" filter="url(#tglow)"/>
+  </g>
+</svg>

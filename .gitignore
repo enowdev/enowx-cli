@@ -1,0 +1,9 @@
+/target
+/dist
+*.rs.bk
+Cargo.lock.bak
+.DS_Store
+node_modules
+.env
+.env.*
+!.env.example

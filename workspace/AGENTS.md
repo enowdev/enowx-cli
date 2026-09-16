@@ -1,0 +1,2 @@
+# Project rules
+Be terse.
